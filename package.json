@@ -9,8 +9,10 @@
 	"devDependencies": {
 		"@nestjs/cli": "^11.0.14",
 		"@nestjs/schematics": "^11.0.9",
+		"@prisma/client": "^7.1.0",
 		"@types/express": "^5.0.6",
 		"@types/node": "^24.10.2",
+		"prisma": "^7.1.0",
 		"ts-loader": "^9.5.4",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.9.3"
