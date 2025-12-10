@@ -9,6 +9,30 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
-datasource db {
-  provider = "postgresql"
+// 3. ENUM: Định nghĩa các trạng thái công việc cố định
+// ----------------------------------------------------
+enum TaskStatus {
+  TODO      // To Do
+  IN_PROGRESS // In Progress
+  FOR_REVIEW  // For Review
+  DONE      // Done
+}
+
+// ----------------------------------------------------
+// 4. MODEL: Định nghĩa mô hình công việc (Task)
+// ----------------------------------------------------
+model Task {
+  // Trường ID (Khóa chính)
+  id          String   @id @default(uuid())
+
+  // Nội dung/tiêu đề công việc
+  title       String
+  description String?  // Mô tả (tùy chọn)
+
+  // Trường trạng thái, sử dụng Enum TaskStatus
+  status      TaskStatus @default(TODO)
+
+  // Thời gian tạo và cập nhật
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
