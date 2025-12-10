@@ -9,6 +9,10 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+datasource db {
+  provider = "postgresql"
+}
+// ----------------------------------------------------
 // 3. ENUM: Định nghĩa các trạng thái công việc cố định
 // ----------------------------------------------------
 enum TaskStatus {

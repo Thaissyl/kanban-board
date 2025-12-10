@@ -1,0 +1,52 @@
+services:
+  # ----------------------------------------------------
+  # Dịch vụ 1: Cơ sở dữ liệu PostgreSQL (db)
+  # ----------------------------------------------------
+  db:
+    image: postgres:15-alpine # Sử dụng phiên bản nhẹ của PostgreSQL
+    container_name: kanban_db_service
+    restart: always
+    environment:
+      # Biến môi trường CSDL - Dự án của bạn sẽ dùng các giá trị này
+      POSTGRES_USER: kanban
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: kanban_db
+    volumes:
+      # Lưu trữ dữ liệu CSDL vĩnh viễn trên máy host
+      - db_data:/var/lib/postgresql/data 
+    ports:
+      # Ánh xạ cổng: HOST:CONTAINER. Truy cập từ máy host qua cổng 5434
+      - "5434:5432" 
+
+  # ----------------------------------------------------
+  # Dịch vụ 2: Ứng dụng Node.js (app)
+  # ----------------------------------------------------
+  app:
+    build:
+      context: . # Đường dẫn đến Dockerfile (thư mục hiện tại)
+      dockerfile: Dockerfile # Tên tệp Dockerfile
+    container_name: kanban_app_service
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # Chuỗi kết nối cho Prisma/Ứng dụng (Sử dụng tên dịch vụ 'db' và cổng 5432 nội bộ)
+      DATABASE_URL: postgresql://kanban_user:kanban_password@db:5432/kanban_db
+    volumes:
+      # Mount thư mục hiện tại vào /app để cập nhật mã nguồn (Hot Reloading/Development)
+      - .:/app
+      # Trừ thư mục node_modules ra để không ghi đè node_modules của container
+      - /app/node_modules 
+    ports:
+      # Ánh xạ cổng: HOST:CONTAINER. Truy cập ứng dụng qua cổng 3000
+      - "3000:3000"
+    depends_on:
+      - db # Đảm bảo CSDL khởi động trước Ứng dụng
+    # Thay thế bằng lệnh khởi động ứng dụng của bạn (ví dụ: dùng pnpm)
+    command: pnpm start 
+
+# ----------------------------------------------------
+# Định nghĩa Volumes
+# ----------------------------------------------------
+volumes:
+  db_data: # Volume để lưu trữ dữ liệu PostgreSQL vĩnh viễn
